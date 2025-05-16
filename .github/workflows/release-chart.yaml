@@ -21,6 +21,11 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Add Helm repositories
+        run: |
+          helm repo add cnpg https://cloudnative-pg.github.io/charts
+          helm repo update
+
       - name: Helm Chart Releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
