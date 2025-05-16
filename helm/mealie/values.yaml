@@ -1,0 +1,223 @@
+url: &url recepies.example.org
+application_port: &application_port 9000
+user_id: &user_id 911
+group_id: &group_id 911
+
+
+replicaCount: 1
+image:
+  repository: ghcr.io/mealie-recipes/mealie
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v2.8.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: *group_id
+  fsGroupChangePolicy: OnRootMismatch
+  supplementalGroups:
+    - *group_id
+
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsUser: *user_id
+  runAsGroup: *group_id
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: *application_port
+
+ingress:
+  enabled: false
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: domain-0-le-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-chain-basic@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  hosts:
+    - host: *url
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: mealie-tls
+      hosts:
+        - *url
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: mealie-data
+  - name: nltk
+    persistentVolumeClaim:
+      claimName: nltk-data
+  - name: tmp
+    emptyDir:
+      sizeLimit: 4Gi
+  - name: shared
+    emptyDir: {}
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+  - mountPath: /app/data
+    name: data
+  - mountPath: /app/nltk_data
+    name: nltk
+  - mountPath: /shared
+    name: shared
+
+pvc: 
+  - name: mealie-data
+    size: 10Gi
+    storageClass: longhorn
+  - name: nltk-data
+    size: 8Gi
+    storageClass: longhorn
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgres:
+  fullnameOverride: mealie-database
+  type: postgresql
+  mode: standalone
+  cluster:
+    instances: 2
+  monitoring:
+    enabled: true
+  resources:
+    limits:
+      cpu: 800m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 100mi
+  enableSuperuserAccess: true
+  backups:
+    enabled: true
+    provider: azure
+    azure:
+      path: "/"
+      storageAccount: stschuurmanithot
+      storageKey: "placeholder"
+      containerName: "cnpg"
+      serviceName: blob
+      inheritFromAzureAD: false
+  poolers: []
+
+mealie:
+  general:
+    user_id: *user_id
+    group_id: *group_id
+    default_group: Home
+    default_household: Family
+    base_url: *url
+    token_time: 48
+    api_port: *application_port
+    api_docs: False
+    timezone: Europe/Amsterdam
+    allow_signup: false
+    log_level: debug
+    daily_schedule_time: 12:00
+  security:
+    max_login_attempts: 5
+    user_lockout_time: 24
+  email:
+    host: mail.example.org
+    user: placeholder@example.org
+    password: null
+    port: 587
+    from_name: Mealie
+    from_email: mealie@example.org
+    # TLS | SSL | NONE
+    auth_strategy: TLS
+  webworkers:
+    max_workers: 1
+  ldap:
+    auth_enabled: false
+    server_url: ""
+    tls_insecure: false
+    enable_starttls: false
+    tls_cacertfile: ""
+    base_dn: ""
+    query_bind: ""
+    query_password: ""
+    user_filter: ""
+    admin_filter: ""
+    id_attribute: uid
+    name_attribute: name
+    mail_attribute: mail
+  oidc:
+    auth_enabled: false
+    signup_enabled: true
+    configuration_url: ""
+    client_id: ""
+    client_secret: ""
+    user_group: ""
+    admin_group: ""
+    auto_redirect: false
+    provider_name: OAuth
+    remember_me: false
+    signing_algorithm: "HS256"
+    user_claim: ""
+    name_claim: ""
+    groups_claim: ""
+    scopes_override: ""
+    tls_cacertfile: ""

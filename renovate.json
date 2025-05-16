@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "config:recommended"
+    ],
+    "enabledManagers": [
+        "helm-values"
+    ],
+    "packageRules": [
+        {
+            "matchManagers": [
+                "helm-values"
+            ],
+            "groupName": "Helm chart versions"
+        }
+    ]
+}

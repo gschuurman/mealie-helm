@@ -1,0 +1,98 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ include "mealie.fullname" . }}-secrets
+  labels:
+    {{- include "mealie.labels" . | nindent 4 }}
+stringData:
+    # Email
+    SMTP_HOST: {{ .Values.mealie.email.host | quote | default "" }}
+    SMTP_PORT: {{ .Values.mealie.email.port | quote | default "587" }}
+    SMTP_FROM_NAME: {{  .Values.mealie.email.from_name | quote | default "Mealie" }}
+    SMTP_AUTH_STRATEGY: {{ .Values.mealie.email.auth_strategy | quote | default "TLS" }}
+    SMTP_FROM_EMAIL: {{ .Values.mealie.email.from_email | quote | default "" }}
+    SMTP_USER: {{ .Values.mealie.email.user | quote | default "" }}
+    SMTP_PASSWORD: {{ .Values.mealie.email.password | quote | default "" }}
+
+    # LDAP
+    LDAP_AUTH_ENABLED: {{ .Values.mealie.ldap.auth_enabled }}
+    LDAP_SERVER_URL: {{ .Values.mealie.ldap.server_url }}
+    LDAP_TLS_INSECURE: {{ .Values.mealie.ldap.tls_insecure }}
+    LDAP_TLS_CACERTFILE: {{ .Values.mealie.ldap.tls_cacertfile }}
+    LDAP_ENABLE_STARTTLS: {{ .Values.mealie.ldap.enable_starttls }}
+    LDAP_BASE_DN: {{ .Values.mealie.ldap.base_dn }}
+    LDAP_QUERY_BIND: {{ .Values.mealie.ldap.query_bind }}
+    LDAP_QUERY_PASSWORD: {{ .Values.mealie.ldap.query_password }}
+    LDAP_USER_FILTER: {{ .Values.mealie.ldap.user_filter }}
+    LDAP_ADMIN_FILTER: {{ .Values.mealie.ldap.admin_filter }}
+    LDAP_ID_ATTRIBUTE: {{ .Values.mealie.ldap.id_attribute }}
+    LDAP_NAME_ATTRIBUTE: {{ .Values.mealie.ldap.name_attribute }}
+    LDAP_MAIL_ATTRIBUTE: {{ .Values.mealie.ldap.mail_attribute }}
+
+    # OIDC
+    OIDC_AUTH_ENABLED: {{ .Values.mealie.oidc.auth_enabled }}
+    OIDC_SIGNUP_ENABLED: {{ .Values.mealie.oidc.signup_enabled }}
+    OIDC_CONFIGURATION_URL: {{ .Values.mealie.oidc.configuration_url }}
+    OIDC_CLIENT_ID†: {{ .Values.mealie.oidc.client_id }}
+    OIDC_CLIENT_SECRET: {{ .Values.mealie.oidc.client_secret }}
+    OIDC_USER_GROUP: {{ .Values.mealie.oidc.user_group }}
+    OIDC_ADMIN_GROUP: {{ .Values.mealie.oidc.admin_group }}
+    OIDC_AUTO_REDIRECT: {{ .Values.mealie.oidc.auto_redirect }}
+    OIDC_PROVIDER_NAME: {{ .Values.mealie.oidc.provider_name }}
+    OIDC_REMEMBER_ME: {{ .Values.mealie.oidc.remember_me }}
+    OIDC_SIGNING_ALGORITHM: {{ .Values.mealie.oidc.signing_algorithm }}
+    OIDC_USER_CLAIM: {{ .Values.mealie.oidc.user_claim }}
+    OIDC_NAME_CLAIM: {{ .Values.mealie.oidc.name_claim }}
+    OIDC_GROUPS_CLAIM: {{ .Values.mealie.oidc.groups_claim }}
+    OIDC_SCOPES_OVERRIDE: {{ .Values.mealie.oidc.scopes_override }}
+    OIDC_TLS_CACERTFILE: {{ .Values.mealie.oidc.tls_cacertfile }}
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "mealie.fullname" . }}-config
+  labels:
+    {{- include "mealie.labels" . | nindent 4 }}
+data:
+    # General
+    PUID : {{ .Values.mealie.general.user_id | quote | default 911 }}
+    PGID : {{ .Values.mealie.general.group_id | quote | default 911 }}
+    DEFAULT_GROUP : {{ .Values.mealie.general.default_group | quote | default "Home" }}
+    DEFAULT_HOUSEHOLD : {{ .Values.mealie.general.default_household | quote | default "Family" }}
+    BASE_URL : {{ .Values.mealie.general.base_url | quote | default "http://localhost:9000" }}
+    TOKEN_TIME : {{ .Values.mealie.general.token_time | quote | default 48 }}
+    API_PORT : {{ .Values.mealie.general.api_port | quote | default 9000 }}
+    API_DOCS : {{ .Values.mealie.general.api_docs | quote | default "False" }}
+    TZ : {{ .Values.mealie.general.timezone | default "UTC" }}
+    ALLOW_SIGNUP : {{ .Values.mealie.general.allow_signup | quote | default "False" }}
+    LOG_LEVEL : {{ .Values.mealie.general.log_level | quote | default "info" }}
+    DAILY_SCHEDULE_TIME : {{ .Values.mealie.general.daily_schedule_time | quote | default "23:45" }}
+
+    # Security
+    SECURITY_MAX_LOGIN_ATTEMPTS: {{ .Values.mealie.security.max_login_attempts | quote | default 5 }}
+    SECURITY_USER_LOCKOUT_TIME: {{ .Values.mealie.security.user_lockout_time | quote | default 24 }}
+
+    # Database
+    DB_ENGINE: postgres
+    # Additional settings are set on the deployment of the app because of the CNPG cluster deployment
+
+    UVICORN_WORKERS: {{ .Values.mealie.webworkers.max_workers | quote | default 1 }}
+
+    THEME_LIGHT_PRIMARY: #E58325
+    THEME_LIGHT_ACCENT: #007A99
+    THEME_LIGHT_SECONDARY: #973542
+    THEME_LIGHT_SUCCESS: #43A047
+    THEME_LIGHT_INFO: #1976D2
+    THEME_LIGHT_WARNING: #FF6D00
+    THEME_LIGHT_ERROR: #EF5350
+
+    THEME_DARK_PRIMARY: #E58325
+    THEME_DARK_ACCENT: #007A99
+    THEME_DARK_SECONDARY: #973542
+    THEME_DARK_SUCCESS: #43A047
+    THEME_DARK_INFO: #1976D2
+    THEME_DARK_WARNING: #FF6D00
+    THEME_DARK_ERROR: #EF5350
