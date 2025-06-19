@@ -1,16 +1,27 @@
+{{- if .Values.pvc }}
 {{- range .Values.pvc }}
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .name }}
+  # Added | quote for robustness
+  name: {{ .name | quote }}
+  # Best Practice: Add standard labels for your release
+  labels:
+    {{- include "mealie.labels" $ | nindent 4 }}
+  # Best Practice: Explicitly define the namespace
+  namespace: {{ $.Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteMany
+    # Corrected: The default value is now a string.
+    - {{ .accessMode | default "ReadWriteOnce" }}
   resources:
     requests:
-      storage: {{ .size }}
+      # Added | quote to ensure this is always a string, which is required.
+      storage: {{ .size | quote }}
   {{- if .storageClass }}
-  storageClassName: {{ .storageClass }}
+  # Added | quote for robustness
+  storageClassName: {{ .storageClass | quote }}
   {{- end }}
----
+{{- end }}
 {{- end }}
