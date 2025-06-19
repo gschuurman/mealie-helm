@@ -5,7 +5,7 @@ metadata:
   name: {{ .name }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .size }}
