@@ -17,38 +17,37 @@ stringData:
     SMTP_PASSWORD: {{ .Values.mealie.email.password | quote | default "" }}
 
     # LDAP
-    LDAP_AUTH_ENABLED: {{ .Values.mealie.ldap.auth_enabled }}
-    LDAP_SERVER_URL: {{ .Values.mealie.ldap.server_url }}
-    LDAP_TLS_INSECURE: {{ .Values.mealie.ldap.tls_insecure }}
-    LDAP_TLS_CACERTFILE: {{ .Values.mealie.ldap.tls_cacertfile }}
-    LDAP_ENABLE_STARTTLS: {{ .Values.mealie.ldap.enable_starttls }}
-    LDAP_BASE_DN: {{ .Values.mealie.ldap.base_dn }}
-    LDAP_QUERY_BIND: {{ .Values.mealie.ldap.query_bind }}
-    LDAP_QUERY_PASSWORD: {{ .Values.mealie.ldap.query_password }}
-    LDAP_USER_FILTER: {{ .Values.mealie.ldap.user_filter }}
-    LDAP_ADMIN_FILTER: {{ .Values.mealie.ldap.admin_filter }}
-    LDAP_ID_ATTRIBUTE: {{ .Values.mealie.ldap.id_attribute }}
-    LDAP_NAME_ATTRIBUTE: {{ .Values.mealie.ldap.name_attribute }}
-    LDAP_MAIL_ATTRIBUTE: {{ .Values.mealie.ldap.mail_attribute }}
+    LDAP_AUTH_ENABLED: {{ .Values.mealie.ldap.auth_enabled | default false | quote }}
+    LDAP_SERVER_URL: {{ .Values.mealie.ldap.server_url | default "" | quote }}
+    LDAP_TLS_INSECURE: {{ .Values.mealie.ldap.tls_insecure | default false | quote }}
+    LDAP_TLS_CACERTFILE: {{ .Values.mealie.ldap.tls_cacertfile | default "" | quote }}
+    LDAP_ENABLE_STARTTLS: {{ .Values.mealie.ldap.enable_starttls | default false | quote }}
+    LDAP_BASE_DN: {{ .Values.mealie.ldap.base_dn | default "" | quote }}
+    LDAP_QUERY_BIND: {{ .Values.mealie.ldap.query_bind | default "" | quote }}
+    LDAP_QUERY_PASSWORD: {{ .Values.mealie.ldap.query_password | default "" | quote }}
+    LDAP_USER_FILTER: {{ .Values.mealie.ldap.user_filter | default "" | quote }}
+    LDAP_ADMIN_FILTER: {{ .Values.mealie.ldap.admin_filter | default "" | quote }}
+    LDAP_ID_ATTRIBUTE: {{ .Values.mealie.ldap.id_attribute | default "uid" | quote }}
+    LDAP_NAME_ATTRIBUTE: {{ .Values.mealie.ldap.name_attribute | default "name" | quote }}
+    LDAP_MAIL_ATTRIBUTE: {{ .Values.mealie.ldap.mail_attribute | default "mail" | quote }}
 
     # OIDC
-    OIDC_AUTH_ENABLED: {{ .Values.mealie.oidc.auth_enabled }}
-    OIDC_SIGNUP_ENABLED: {{ .Values.mealie.oidc.signup_enabled }}
-    OIDC_CONFIGURATION_URL: {{ .Values.mealie.oidc.configuration_url }}
-    OIDC_CLIENT_ID†: {{ .Values.mealie.oidc.client_id }}
-    OIDC_CLIENT_SECRET: {{ .Values.mealie.oidc.client_secret }}
-    OIDC_USER_GROUP: {{ .Values.mealie.oidc.user_group }}
-    OIDC_ADMIN_GROUP: {{ .Values.mealie.oidc.admin_group }}
-    OIDC_AUTO_REDIRECT: {{ .Values.mealie.oidc.auto_redirect }}
-    OIDC_PROVIDER_NAME: {{ .Values.mealie.oidc.provider_name }}
-    OIDC_REMEMBER_ME: {{ .Values.mealie.oidc.remember_me }}
-    OIDC_SIGNING_ALGORITHM: {{ .Values.mealie.oidc.signing_algorithm }}
-    OIDC_USER_CLAIM: {{ .Values.mealie.oidc.user_claim }}
-    OIDC_NAME_CLAIM: {{ .Values.mealie.oidc.name_claim }}
-    OIDC_GROUPS_CLAIM: {{ .Values.mealie.oidc.groups_claim }}
-    OIDC_SCOPES_OVERRIDE: {{ .Values.mealie.oidc.scopes_override }}
-    OIDC_TLS_CACERTFILE: {{ .Values.mealie.oidc.tls_cacertfile }}
-
+    OIDC_AUTH_ENABLED: {{ .Values.mealie.oidc.auth_enabled | default false | quote }}
+    OIDC_SIGNUP_ENABLED: {{ .Values.mealie.oidc.signup_enabled | default false | quote }}
+    OIDC_CONFIGURATION_URL: {{ .Values.mealie.oidc.configuration_url | default "" | quote }}
+    OIDC_CLIENT_ID: {{ .Values.mealie.oidc.client_id | default "" | quote }}
+    OIDC_CLIENT_SECRET: {{ .Values.mealie.oidc.client_secret | default "" | quote }}
+    OIDC_USER_GROUP: {{ .Values.mealie.oidc.user_group | default "" | quote }}
+    OIDC_ADMIN_GROUP: {{ .Values.mealie.oidc.admin_group | default "" | quote }}
+    OIDC_AUTO_REDIRECT: {{ .Values.mealie.oidc.auto_redirect | default false | quote }}
+    OIDC_PROVIDER_NAME: {{ .Values.mealie.oidc.provider_name | default "OAuth" | quote }}
+    OIDC_REMEMBER_ME: {{ .Values.mealie.oidc.remember_me | default true | quote }}
+    OIDC_SIGNING_ALGORITHM: {{ .Values.mealie.oidc.signing_algorithm | default "HS256" | quote }}
+    OIDC_USER_CLAIM: {{ .Values.mealie.oidc.user_claim | default "" | quote }}
+    OIDC_NAME_CLAIM: {{ .Values.mealie.oidc.name_claim | default "" | quote }}
+    OIDC_GROUPS_CLAIM: {{ .Values.mealie.oidc.groups_claim | default "" | quote }}
+    OIDC_SCOPES_OVERRIDE: {{ .Values.mealie.oidc.scopes_override | default "" | quote }}
+    OIDC_TLS_CACERTFILE: {{ .Values.mealie.oidc.tls_cacertfile | default "" | quote }}
 ---
 kind: ConfigMap
 apiVersion: v1
