@@ -3,6 +3,21 @@ entries:
   mealie:
   - apiVersion: v2
     appVersion: v2.8.0
+    created: "2025-08-26T06:36:57.444493299Z"
+    dependencies:
+    - alias: postgres
+      name: cluster
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.3.1
+    description: A Helm chart for Kubernetes
+    digest: 68fc2238e528396270c9d33dcd94d5a6503fe4b2bb734817656b3ef8162081f7
+    name: mealie
+    type: application
+    urls:
+    - https://github.com/gschuurman/mealie-helm/releases/download/mealie-0.1.5/mealie-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: v2.8.0
     created: "2025-06-19T11:13:14.886689562Z"
     dependencies:
     - alias: postgres
@@ -61,4 +76,4 @@ entries:
     urls:
     - https://github.com/gschuurman/mealie-helm/releases/download/mealie-0.1.1/mealie-0.1.1.tgz
     version: 0.1.1
-generated: "2025-06-19T11:13:14.886710411Z"
+generated: "2025-08-26T06:36:57.44452031Z"
